@@ -1,0 +1,421 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} NFS3 {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <main class="c-main">
+    <div class="container-fluid" style="margin-top:-20px">
+      <div class="fade-in">
+
+        <div class="nav-tabs-boxed">
+          <ul class="nav nav-tabs" id="perfTab" role="tablist">
+            <li class="nav-item"><a class="nav-link {% if benchmark == "swbuild" %}active{% endif %}" data-toggle="tab" href="#swbuild" role="tab" aria-controls="swbuild">SWBUILD</a></li>
+            <li class="nav-item"><a class="nav-link {% if benchmark == "database" %}active{% endif %}" data-toggle="tab" href="#database" role="tab" aria-controls="database">DATABASE</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane {% if benchmark == "swbuild" %}active{% endif %}" id="swbuild" role="tabpanel">
+            <div class="card">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h4 class="card-title mb-0">NFS3 Performance Benchmark</h4>
+                    <div class="small text-muted">2021-xx-xx ~ 2021-xx-xx</div>
+                  </div>
+                  <div class="btn-toolbar d-none d-md-block" role="toolbar" aria-label="Toolbar with buttons">
+                    <div class="btn-group btn-group-toggle mx-2" data-toggle="buttons">
+                      <button id="previous_swbuild" class="btn btn-outline-dark" type="button">
+                        <svg class="c-icon">
+                          <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-chevron-double-left"></use>
+                        </svg>
+                        Previous {{ limit }} 
+                      </button> 
+                
+                      <button id="next_swbuild" class="btn btn-outline-dark" type="button">
+                        Next {{ limit }}
+                        <svg class="c-icon">
+                          <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-chevron-double-right"></use>
+                        </svg>
+                      </button> 
+                    </div>
+                    <button class="btn btn-outline-dark dropdown-toggle" id="dropdownMenu1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <svg class="c-icon">
+                        <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-calendar"></use>
+                      </svg>
+                      Custom
+                    </button>
+                    <div class="dropdown-menu">
+                      <form class="px-4 py-3">
+                        <div class="form-group">
+                          <label for="start-date-input">Start Date:</label>
+                          <input class="form-control" id="start-date-input1" type="date" name="start-date-input1" placeholder="date"><span class="help-block">Please enter a valid date</span>
+                        </div>
+                        <div class="form-group">
+                          <label for="end-date-input">End Date:</label>
+                          <input class="form-control" id="end-date-input1" type="date" name="end-date-input1" placeholder="date"><span class="help-block">Please enter a valid date</span>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                      </form>
+                    </div>
+                    <button type="button" class="btn btn-outline-dark btn-secondary" data-toggle="modal" data-target=".benchmark-modal-xl">
+                      <svg class="c-icon">
+                        <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-pencil"></use>
+                      </svg>
+                      Edit Data
+                    </button>  
+                  </div> 
+                  </div>
+                </div>
+              <div class="card-body content-center">
+                <div class="c-chart-wrapper" id="chart-wrapper-swbuild" style="width:80%;">
+                  <canvas id="canvas-swbuild"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade benchmark-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Performance Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">           
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">Date</th>
+                          <th scope="col">Suffix</th>
+                          <th scope="col">Build</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+              
+            </div>
+            <div class="tab-pane {% if benchmark == "database" %}active{% endif %}" id="database" role="tabpanel">
+              <div class="card">
+                <div class="card-header">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <h4 class="card-title mb-0">NFS3 Performance Benchmark</h4>
+                      <div class="small text-muted">2021-xx-xx ~ 2021-xx-xx</div>
+                    </div>
+                    <div class="btn-toolbar d-none d-md-block" role="toolbar" aria-label="Toolbar with buttons">
+                      <div class="btn-group btn-group-toggle mx-2" data-toggle="buttons">
+                        <button id="previous_database" class="btn btn-outline-dark" type="button">
+                          <svg class="c-icon">
+                            <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-chevron-double-left"></use>
+                          </svg>
+                            Previous {{ limit }} 
+                        </button> 
+                        <button id="next_database" class="btn btn-outline-dark" type="button">
+                            Next {{ limit }}
+                          <svg class="c-icon">
+                            <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-chevron-double-right"></use>
+                          </svg>
+                        </button>
+                      </div>   
+                      <button class="btn btn-outline-dark dropdown-toggle" id="dropdownMenu2" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <svg class="c-icon">
+                          <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-calendar"></use>
+                        </svg>
+                          Custom
+                      </button>
+                      <div class="dropdown-menu">
+                        <form class="px-4 py-3">
+                          <div class="form-group">
+                            <label for="start-date-input">Start Date:</label>
+                            <input class="form-control" id="start-date-input2" type="date" name="start-date-input2" placeholder="date"><span class="help-block">Please enter a valid date</span>
+                          </div>
+                          <div class="form-group">
+                            <label for="end-date-input">End Date:</label>
+                            <input class="form-control" id="end-date-input2" type="date" name="end-date-input2" placeholder="date"><span class="help-block">Please enter a valid date</span>
+                          </div>
+                          <button class="btn btn-primary" type="submit">Submit</button>
+                        </form>
+                      </div>  
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card-body content-center">
+                  <div class="c-chart-wrapper" style="width:80%;">
+                    <canvas id="canvas-database"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div>
+      <input type="hidden" id="tmpbenchmark"></input>
+      <input type="hidden" id="tmplimit"></input>
+      <input type="hidden" id="tmpoffset"></input>
+      <input type="hidden" id="tmpcount"></input>
+    </div>
+
+  </main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="/static/assets/js/jquery.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.bundle.js"></script>
+  <!--script src="/static/assets/js/charts.js"></script-->
+  <script type="text/javascript">
+  var offset = {{ offset }};
+  var limit = {{ limit }};
+  var count = {{ count }};
+  var benchmark = "{{ benchmark }}";
+  var mychart;
+  var COLORS = [
+    '#4dc9f6',
+    '#f67019',
+    '#f53794',
+    '#537bc4',
+    '#acc236',
+    '#166a8f',
+    '#00a950',
+    '#58595b',
+    '#8549ba',
+    '#b31340'
+  ];
+
+  var lineOptions = {
+    responsive: true,
+    legend: {
+      position: 'right',
+    },
+    scales: {
+      xAxes: [{
+        type: 'linear',
+        scaleLabel: {
+          display: true,
+          labelString: 'Achived Ops/sec'
+        }
+      }],
+      yAxes: [{
+        type: 'linear',
+        scaleLabel: {
+          display: true,
+          labelString: 'Avg Latency (ms)'
+        },
+      }]
+    }
+  };
+
+  function getLineColor(ctx) {
+    return COLORS[ctx.datasetIndex % COLORS.length];
+  }
+
+  // one line
+  function genLineData(dataobj) {
+    var dataset = {label: dataobj.legend, 
+              fill: false,
+              backgroundColor: getLineColor,
+              borderColor: getLineColor,
+              showLine: true,
+              data: []
+            }; 
+    var pdata = dataobj.data;
+    var plabels = dataobj.labels;
+    pdata.forEach((element, idx) => {
+      dataset.data.push({x: plabels[idx], y: element});
+    });
+    return dataset;
+  }
+
+
+  //draw diag
+  function drawDiag(benchmark, dataset) {
+    // console.log("drawDiag:");
+    // console.log(dataset);
+    if (window.mychart != undefined) {
+      window.mychart.destroy();
+      //$('#chart-wrapper-'+benchmark).remove();
+      //$('#chart-wrapper-'+benchmark).append('<canvas id="canvas-"+benchmark></canvas>');
+    }
+    window.mychart = new Chart(document.getElementById('canvas-'+benchmark).getContext("2d"), {
+      type: 'scatter',
+      data: {
+        datasets: dataset,
+      },
+      options: lineOptions
+    });
+  }
+
+  function getData(benchmark, limit, offset) {
+    $.ajax({url:"/nfs3api?benchmark="+benchmark+"&limit="+limit+"&offset="+offset, success:function(result){
+			//$("#div1").html(result);
+      var diagData;
+      // {"benchmark":"database","count":25,"res":[{"Timestamp":"xxx","data":[],"labels": [], "legend": "xxx"}]
+      resObj = JSON.parse(JSON.stringify(result));
+
+      var tmpcount = document.getElementById('tmpcount');
+      tmpcount.value = resObj.count;
+    
+      // global
+      var lineDataSet = [];
+      $("table tbody").empty();
+
+      resObj.res.forEach(function(element) {
+        //one line
+        var dataset =  genLineData(element);
+        lineDataSet.push(dataset);
+        var new_row = "<tr><td>" + element.Timestamp +"</td><td>"+element.legend+"</td><td>"+element.build+"</td><td>"+element.desc+"</td><td>hide</td></tr>";
+        $("table tbody").append(new_row);
+
+        
+      });
+      console.log("before draw diag:");
+      console.log(lineDataSet);
+      drawDiag(benchmark, lineDataSet);
+		}});
+  }
+
+  function updatePreNextBtn() {
+    var tmpbenchmark = document.getElementById('tmpbenchmark');
+    var tmplimit = document.getElementById('tmplimit');
+    var tmpoffset = document.getElementById('tmpoffset');
+    var tmpcount = document.getElementById('tmpcount');
+    var preBtn = document.getElementById('previous_'+tmpbenchmark.value);
+    var nextBtn = document.getElementById('next_'+tmpbenchmark.value);
+
+    if (parseInt(tmpoffset.value) == 0) {
+      preBtn.disabled = true;
+      console.log('previous_'+tmpbenchmark.value +" disabled.");
+    } else {
+      preBtn.disabled = false;
+      console.log('previous_'+tmpbenchmark.value +" enabled.");
+    }
+
+    if (parseInt(tmpoffset.value) + parseInt(tmplimit.value) >= parseInt(tmpcount.value)) {
+      nextBtn.disabled = true;
+      console.log('next_'+tmpbenchmark.value +" disabled.");
+    } else {
+      nextBtn.disabled = false;
+      console.log('next_'+tmpbenchmark.value +" enabled.");
+    }
+  }
+
+
+  function updatePreNext() {
+    var tmpbenchmark = document.getElementById('tmpbenchmark');
+    var preBtn = document.getElementById('previous_'+tmpbenchmark.value);
+    var nextBtn = document.getElementById('next_'+tmpbenchmark.value);
+
+    updatePreNextBtn();
+
+
+    // not onchange, should be onclick
+    preBtn.onclick = function() {
+      console.log("pre btn click:");
+      var tmpbenchmark = document.getElementById('tmpbenchmark');
+      var tmplimit = document.getElementById('tmplimit');
+      var tmpoffset = document.getElementById('tmpoffset');
+      var tmpcount = document.getElementById('tmpcount');
+      var nextBtn = document.getElementById('next_'+tmpbenchmark.value);
+
+      if( parseInt(tmpoffset.value) >= parseInt(tmplimit.value)) {
+        tmpoffset.value =  parseInt(tmpoffset.value) - parseInt(tmplimit.value);
+      } else {
+        tmpoffset.value = 0;
+      }
+      console.log(tmpbenchmark.value, tmplimit.value, tmpoffset.value);
+      getData(tmpbenchmark.value, tmplimit.value, tmpoffset.value);
+      
+      updatePreNextBtn();
+
+    };
+
+    nextBtn.onclick = function() {
+      console.log("next btn click:");
+      var tmpbenchmark = document.getElementById('tmpbenchmark');
+      var tmplimit = document.getElementById('tmplimit');
+      var tmpoffset = document.getElementById('tmpoffset');
+      var tmpcount = document.getElementById('tmpcount');
+      var preBtn = document.getElementById('previous_'+tmpbenchmark.value);
+      
+      tmpoffset.value =  parseInt(tmpoffset.value) + parseInt(tmplimit.value);
+      console.log(tmpbenchmark.value, tmplimit.value, tmpoffset.value);
+      if(parseInt(tmpoffset.value) <= parseInt(tmpcount.value)) {
+        getData(tmpbenchmark.value, tmplimit.value, tmpoffset.value);
+      }
+      
+      updatePreNextBtn();
+
+    };
+  }
+
+
+  var triggerTabList = [].slice.call(document.querySelectorAll('#perfTab a'));
+  triggerTabList.forEach(function (triggerEl) {
+    var tabTrigger = new coreui.Tab(triggerEl);
+
+    triggerEl.addEventListener('click', function (event) {
+      event.preventDefault();
+      //alert(triggerEl.text);
+      // if (benchmark != triggerEl.text.toLowerCase()) {
+      //   window.location.href = "/nfs3?benchmark="+triggerEl.text.toLowerCase()+"&limit="+limit+"&offset="+offset;
+      // }
+      var tmpbenchmark = document.getElementById('tmpbenchmark');
+      tmpbenchmark.value = triggerEl.text.toLowerCase();
+      var tmplimit = document.getElementById('tmplimit');
+      tmplimit.value = limit;
+      var tmpoffset = document.getElementById('tmpoffset');
+      tmpoffset.value = 0;
+      
+      updatePreNext();
+      
+      getData(triggerEl.text.toLowerCase(), limit, 0);
+
+    });
+  });
+
+
+  window.onload = function() {
+    var tmpbenchmark = document.getElementById('tmpbenchmark');
+    tmpbenchmark.value = benchmark;
+    var tmplimit = document.getElementById('tmplimit');
+    tmplimit.value = limit;
+    var tmpoffset = document.getElementById('tmpoffset');
+    tmpoffset.value = offset;
+
+    // update pre next button
+    updatePreNext();
+    // first diag
+    getData(benchmark, limit, offset);
+ 
+
+  };
+
+    
+  </script>
+
+{% endblock javascripts %}

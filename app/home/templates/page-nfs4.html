@@ -1,0 +1,163 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} NFS4 {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <main class="c-main">
+    <div class="container-fluid" style="margin-top:-20px">
+      <div class="fade-in">
+        <div class="card">
+          <div class="card-header">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h4 class="card-title mb-0">NFS4 Performance Benchmark</h4>
+                  <div class="small text-muted">2020-09-01 ~ 2020-09-10</div>
+                </div>
+                <div class="btn-toolbar d-none d-md-block" role="toolbar" aria-label="Toolbar with buttons">
+                  <div class="btn-group btn-group-toggle mx-2" data-toggle="buttons">
+                    <label class="btn btn-outline-dark">
+                      <svg class="c-icon">
+                        <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-chevron-double-left"></use>
+                      </svg>
+                      <input id="previous" type="radio" name="previous" autocomplete="off"> Previous {{ limit }} 
+                    </label>
+                    <label class="btn btn-outline-dark">
+                      <svg class="c-icon">
+                        <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-chevron-double-right"></use>
+                      </svg>
+                      <input id="next" type="radio" name="next" autocomplete="off"> Next {{ limit }}
+                    </label>
+                  </div>
+                  <button class="btn btn-outline-dark dropdown-toggle" id="dropdownMenu1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <svg class="c-icon">
+                      <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-calendar"></use>
+                    </svg>
+                      Custom
+                  </button>
+                  <div class="dropdown-menu">
+                    <form class="px-4 py-3">
+                      <div class="form-group">
+                        <label for="start-date-input">Start Date:</label>
+                        <input class="form-control" id="start-date-input" type="date" name="start-date-input" placeholder="date"><span class="help-block">Please enter a valid date</span>
+                      </div>
+                      <div class="form-group">
+                        <label for="end-date-input">End Date:</label>
+                        <input class="form-control" id="end-date-input" type="date" name="end-date-input" placeholder="date"><span class="help-block">Please enter a valid date</span>
+                      </div>
+                      <button class="btn btn-primary" type="submit">Submit</button>
+                    </form>
+                  </div>  
+                </div>
+              </div>
+          </div>
+          <div class="card-body">
+            <div class="c-chart-wrapper" style="width:90%;">
+              <canvas id="canvas-1"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="/static/assets/js/jquery.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.bundle.js"></script>
+  <!--script src="/static/assets/js/charts.js"></script-->
+  <script type="text/javascript">
+  var lineDataSet = [];
+  var offset = {{ offset }};
+  var limit = {{ limit }};
+  var COLORS = [
+    '#4dc9f6',
+    '#f67019',
+    '#f53794',
+    '#537bc4',
+    '#acc236',
+    '#166a8f',
+    '#00a950',
+    '#58595b',
+    '#8549ba',
+    '#b31340'
+  ];
+
+  window.onload = function() {
+    var preBtn = document.getElementById('previous');
+    var nextBtn = document.getElementById('next');
+
+    if (offset == 0) {
+      preBtn.disabled = true;
+    }
+    
+    preBtn.onchange = function() {
+      window.location.href = "/nfs4?limit=10&offset=0";
+    };
+    nextBtn.onchange = function() {
+      window.location.href = "/nfs4?limit=10&offset=10";
+    };
+  };
+
+  function getLineColor(ctx) {
+    return COLORS[ctx.datasetIndex % COLORS.length];
+  }
+  
+  var lineOptions = {
+    responsive: true,
+    legend: {
+      position: 'right',
+    },
+    scales: {
+      xAxes: [{
+        type: 'linear',
+        scaleLabel: {
+          display: true,
+          labelString: 'Achived Ops/sec'
+        }
+      }],
+      yAxes: [{
+        type: 'linear',
+        scaleLabel: {
+          display: true,
+          labelString: 'Avg Latency (ms)'
+        },
+      }]
+    }
+  };
+  {% for perf in perfdata %}
+      var dataset = {label: '{{perf.legend}}', 
+                     fill: false,
+                     backgroundColor: getLineColor,
+                     borderColor: getLineColor,
+                     showLine: true,
+                     data: []
+                    }; 
+      var pdata = {{ perf.data }};
+      var plabels = {{ perf.labels }};
+      pdata.forEach((element, idx) => {
+        dataset.data.push({x: plabels[idx], y: element});
+      });
+      lineDataSet.push(dataset);
+
+  {% endfor%}
+  var lineChart = new Chart(document.getElementById('canvas-1'), {
+    type: 'scatter',
+    data: {
+      datasets: lineDataSet,
+    },
+    options: lineOptions
+  });
+  </script>
+
+{% endblock javascripts %}
