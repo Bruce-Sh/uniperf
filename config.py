@@ -16,6 +16,7 @@ class Config(object):
     # This will create a file in <app> FOLDER
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    APP_ALREADY_STARTED = False
 
 class ProductionConfig(Config):
     DEBUG = False
@@ -32,13 +33,13 @@ class ProductionConfig(Config):
         config( 'DB_ENGINE'   , default='postgresql'    ),
         config( 'DB_USERNAME' , default='c4dev'         ),
         config( 'DB_PASS'     , default='c4dev!'        ),
-        config( 'DB_HOST'     , default='10.229.168.132'),
+        config( 'DB_HOST'     , default='192.168.18.20'),
         config( 'DB_PORT'     , default=5432            ),
         config( 'DB_NAME'     , default='specdash'      )
     )
 
     # log location
-    SFS_LOG_PATH = '/Interop/logsDB/SPECSFS'
+    SFS_LOG_PATH = '/logsDB/SPECSFS'
 
 class DebugConfig(Config):
     DEBUG = True

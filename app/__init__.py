@@ -23,10 +23,12 @@ def register_blueprints(app):
 def configure_database(app):
     print("configure_database")
 
-    @app.before_first_request
+    @app.before_request
     def initialize_database():
-        print("Initializing database")
-        db.create_all()
+        if not app.config['APP_ALREADY_STARTED']:
+            app.config['APP_ALREADY_STARTED'] = True
+            print("Initializing database")
+            db.create_all()
 
     @app.teardown_request
     def shutdown_session(exception=None):

@@ -26,7 +26,7 @@ application = create_app( app_config )
 Migrate(application, db)
 
 
-@application.before_first_request
+@application.before_request
 def start_DB_thread():
     print("starting DB thread")
     db_thrd = DBThread("UpdateDBThread", app=application)

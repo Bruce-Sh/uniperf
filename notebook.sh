@@ -1,2 +1,2 @@
-source /Interop/logsDB/env/bin/activate
-jupyter notebook --allow-root --ip 10.229.168.132 &
+source /logsDB/venv/bin/activate
+jupyter notebook --allow-root --ip 192.168.18.20 &
